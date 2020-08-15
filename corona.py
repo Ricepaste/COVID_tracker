@@ -4,7 +4,13 @@ File "/home/pi/.local/lib/python3.7/site-packages/firebase/__init__.py", line 14
     import python_jwt as jwt
 ModuleNotFoundError: No module named 'python_jwt'
 '''
-
+'''
+pip install python_jwt
+pip install gcloud
+pip install sseclient
+pip install pycrypto
+pip install requests-toolbelt
+'''
 from selenium import webdriver  # pip install selenium
 import time
 from firebase import firebase # pip install firebase
