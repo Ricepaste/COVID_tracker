@@ -122,7 +122,7 @@ class Get_virus():
         fdb.post(temp_datas[1], corona_data)
         
         self.notificate(temp_datas)
-
+        
     def notificate(self, data):
         '''Email'''         
         title = [
@@ -166,4 +166,29 @@ class Get_virus():
                 print('datas have been sent')
             send.quit()  
 
+class Get_news():
+    def __init__(self):
+        self.driver = webdriver.Chrome(path)   #從webdriver.Chrome(path) 把driver路徑放入該函數
+        self.driver.get('https://www.cdc.gov.tw/')
+
+        time.sleep(1.5)
+
+        self.get_data()
+
+    def get_data(self):
+        news = self.driver.find_elements_by_xpath('//a') # get all datas
+
+        for new in news: # check all datas
+            new_link = new.get_attribute('href')
+            if new_link != '' and '2020' in new.text: # only get the latest new
+                new_text = new.text.split('\n')
+
+                temp = ''
+                for x in new_text: # process datas
+                    temp += x
+                new_text = temp
+
+                print(new_link)
+                print(new_text)   
+            
 Get_virus('p')
