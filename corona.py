@@ -178,17 +178,28 @@ class Get_news():
     def get_data(self):
         news = self.driver.find_elements_by_xpath('//a') # get all datas
 
+        news_dic = {}
+
         for new in news: # check all datas
             new_link = new.get_attribute('href')
-            if new_link != '' and '2020' in new.text: # only get the latest new
+            if new_link != '' and '2020' in new.text:
                 new_text = new.text.split('\n')
 
                 temp = ''
+
                 for x in new_text: # process datas
-                    temp += x
+                    if '-' in x: 
+                        x = x.split('-')
+
+                        temp += x[0] + '_' + x[1] + '_'
+
+                    else:
+                        temp += x + '_'
+
                 new_text = temp
 
-                print(new_link)
-                print(new_text)   
+                news_dic[new_text] = new_link # store data as a dic
+
+                print(news_dic)   
             
 Get_virus('p')
