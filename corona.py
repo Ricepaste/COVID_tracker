@@ -1,3 +1,6 @@
+# **Main Epidemic Sentry App code**
+# *爬蟲*
+
 # get covid-19 confirmed cases
 '''
 File "/home/pi/.local/lib/python3.7/site-packages/firebase/__init__.py", line 14, in <module>
@@ -17,11 +20,14 @@ from firebase import firebase # pip install firebase
 import smtplib 
 from email.mime.text import MIMEText
 
-user = 1
-if user == 0:
+notice = 1  #testing send email  if notice = 1 it will send email to you
+user = 2
+if user == 0:  #Kevin
     path = r'D:\Users\Administrator\Desktop\asfsaf\Python\collect_COVID-19\chromedriver.exe'
-else:
+elif user == 1: #Raspberry
     path = r'/usr/lib/chromium-browser/chromedriver'
+elif user == 2: #Tony
+    path = r'D:\spider\chromedriver.exe'
 
 class Get_virus():
     def __init__(self, mode=None): # initialization
@@ -125,6 +131,7 @@ class Get_virus():
         
     def notificate(self, data):
         '''Email'''         
+        global notice
         title = [
             'Country', 'Total Cases', 'New Cases', 'Total Deaths', 'New Deaths', 'Total Recovered', 
             'Active Cases', 'Serious, Critical', 'Tot Cases/1M pop', 'Deaths/1M pop', 'Total tests', 'Tests/1M pop',
@@ -132,7 +139,7 @@ class Get_virus():
             ]
         count = 0
 
-        notice = 1  #testing send email  if notice = 1 it will send email to you
+        
         if notice == 1:  
             print('Has opened the fuction of sending email')
             
@@ -167,8 +174,9 @@ class Get_virus():
             send.quit()  
 
 class Get_news():
+'''get the latest news'''
     def __init__(self):
-        self.driver = webdriver.Chrome(path)   #從webdriver.Chrome(path) 把driver路徑放入該函數
+        self.driver = webdriver.Chrome(path)
         self.driver.get('https://www.cdc.gov.tw/')
 
         time.sleep(1.5)
@@ -176,19 +184,35 @@ class Get_news():
         self.get_data()
 
     def get_data(self):
-        news = self.driver.find_elements_by_xpath('//a') # get all datas
+        news = self.driver.find_elements_by_xpath('//a')
+
+        news_dic = {}
 
         for new in news: # check all datas
             new_link = new.get_attribute('href')
-            if new_link != '' and '2020' in new.text: # only get the latest new
+            if new_link != '' and '2020' in new.text:
                 new_text = new.text.split('\n')
 
                 temp = ''
+
                 for x in new_text: # process datas
-                    temp += x
+                    if '-' in x: 
+                        x = x.split('-')
+
+                        while ' ' in x[0]:
+                            x[0] = x[0].replace(' ', '')
+
+                        temp += x[0] + x[1] + ' '
+
+                    else:
+                        temp += x + ' '
+
                 new_text = temp
 
-                print(new_link)
-                print(new_text)   
+                news_dic[new_text] = new_link
+
+                print(news_dic)
+
+Get_news()   
             
 Get_virus('p')
